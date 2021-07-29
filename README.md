@@ -5,3 +5,4 @@ The repos can be used for
 -PancakeSwap
 -BakerySwap
 -Aave/Mcl
+-Dydx
