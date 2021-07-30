@@ -4,7 +4,6 @@ The repos can be used for \
 -Uniswap \
 -PancakeSwap \
 -BakerySwap \
--Aave
--jjj
+-Aave \
 -Mcl <br>
 -Dydx
