@@ -1,0 +1,58 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+//scaled down version
+pragma experimental ABIEncoderV2;
+
+
+
+pragma solidity >=0.7.0 <0.9.0;
+//import "../../interfaces/IERC20.sol";
+//import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+//import "../../interfaces/IWETH.sol";
+import "../Balancer/IProtocolFeesCollector.sol";
+import "../Balancer/IAsset.sol";
+import "../Balancer/IAuthorizer.sol";
+import "../Balancer/IFlashLoanRecipient.sol";
+
+/**
+ * @dev Full external interface for the Vault core contract - no external or public methods exist in the contract that
+ * don't override one of these declarations.
+ */
+interface IVault {
+    //event AuthorizerChanged(IAuthorizer indexed newAuthorizer);
+    //event RelayerApprovalChanged(address indexed relayer, address indexed sender, bool approved);
+   // event InternalBalanceChanged(address indexed user, IERC20 indexed token, int256 delta);
+   // event ExternalBalanceTransfer(IERC20 indexed token, address indexed sender, address recipient, uint256 amount);
+    //event FlashLoan(IFlashLoanRecipient indexed recipient, IERC20 indexed token, uint256 amount, uint256 feeAmount);
+    //event PoolBalanceManaged(bytes32 indexed poolId,address indexed assetManager,IERC20 indexed token,int256 cashDelta,int256 managedDelta);
+    //event TokensRegistered(bytes32 indexed poolId, IERC20[] tokens, address[] assetManagers);
+    //event TokensDeregistered(bytes32 indexed poolId, IERC20[] tokens);
+    //event PoolRegistered(bytes32 indexed poolId, address indexed poolAddress, PoolSpecialization specialization);
+   // event Swap(bytes32 indexed poolId,IERC20 indexed tokenIn,IERC20 indexed tokenOut,uint256 amountIn,uint256 amountOut);
+
+    struct UserBalanceOp {UserBalanceOpKind kind;IAsset asset;uint256 amount;address sender;address payable recipient;}
+    enum UserBalanceOpKind { DEPOSIT_INTERNAL, WITHDRAW_INTERNAL, TRANSFER_INTERNAL, TRANSFER_EXTERNAL }
+    struct PoolBalanceOp {PoolBalanceOpKind kind;bytes32 poolId;IERC20 token;uint256 amount;}
+    enum PoolBalanceOpKind { WITHDRAW, DEPOSIT, UPDATE }
+    enum PoolSpecialization { GENERAL, MINIMAL_SWAP_INFO, TWO_TOKEN }
+
+    function getAuthorizer() external view returns (IAuthorizer);
+    function setAuthorizer(IAuthorizer newAuthorizer) external;
+    //function hasApprovedRelayer(address user, address relayer) external view returns (bool);
+    //function setRelayerApproval(address sender,address relayer,bool approved) external;
+    function getInternalBalance(address user, IERC20[] memory tokens) external view returns (uint256[] memory);
+    function manageUserBalance(UserBalanceOp[] memory ops) external payable;
+
+   // function getPool(bytes32 poolId) external view returns (address, PoolSpecialization);
+    //function deregisterTokens(bytes32 poolId, IERC20[] memory tokens) external;
+   // function getPoolTokenInfo(bytes32 poolId, IERC20 token) external view returns (uint256 cash,uint256 managed,uint256 lastChangeBlock,address assetManager);
+    function getPoolTokens(bytes32 poolId) external view returns (IERC20[] memory tokens,uint256[] memory balances,uint256 lastChangeBlock);
+    //function swap(SingleSwap memory singleSwap,FundManagement memory funds,uint256 limit,uint256 deadline) external payable returns (uint256);
+    //function queryBatchSwap(SwapKind kind,BatchSwapStep[] memory swaps,IAsset[] memory assets,FundManagement memory funds) external returns (int256[] memory assetDeltas);
+    function flashLoan(IFlashLoanRecipient recipient,IERC20[] memory tokens,uint256[] memory amounts,bytes memory userData) external;
+    //function managePoolBalance(PoolBalanceOp[] memory ops) external;
+    //function getProtocolFeesCollector() external view returns (IProtocolFeesCollector);
+
+   // function WETH() external view returns (IWETH);
+    // solhint-disable-previous-line func-name-mixedcase
+}
